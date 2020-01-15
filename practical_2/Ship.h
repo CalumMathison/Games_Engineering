@@ -18,3 +18,21 @@ public:
 	virtual void Update(const float& dt);
 
 };
+
+class Invader : public Ship
+{
+public: 
+	static bool direction;
+	static float speed;
+	Invader(IntRect ir, Vector2f pos);
+	Invader();
+	void Update(const float& dt) override;
+};
+
+class Player : public Ship
+{
+public:
+	static float speed;
+	Player();
+	void Update(const float& dt) override;
+};
