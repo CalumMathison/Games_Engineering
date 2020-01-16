@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Game.h"
 #include "Ship.h"
+#include "Bullet.h"
 
 using namespace sf;
 using namespace std;
@@ -10,7 +11,7 @@ using namespace std;
 Texture spritesheet;
 Sprite invader;
 vector<Ship*> ships;
-Player player;
+//Player player;
 
 void Load()
 {
@@ -28,12 +29,13 @@ void Load()
 		for (int c = 0; c < invaders_columns; ++c)
 		{
 			Vector2f position = Vector2f(32 * c + 10, 32 * r + 10);
-			auto inv = new Invader(rect, position);
+			auto inv = new Invader(rect, position, false);
 			ships.push_back(inv);
 		}
 	}
 
-	player = Player();
+	auto player = new Player(true);
+	ships.push_back(player);
 }
 
 void Update(RenderWindow& window)
@@ -64,7 +66,9 @@ void Update(RenderWindow& window)
 		s->Update(dt);
 	};
 
-	player.Update(dt);
+	Bullet::Update(dt);
+
+	//player.Update(dt);
 }
 
 void Render(RenderWindow& window)
@@ -75,7 +79,9 @@ void Render(RenderWindow& window)
 		window.draw(*s);
 	}
 
-	window.draw(player);
+	Bullet::Render(window);
+
+	//window.draw(player);
 }
 
 int main()
