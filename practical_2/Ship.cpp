@@ -1,6 +1,7 @@
 #include "Ship.h"
 #include "Game.h"
 #include "Bullet.h"
+#include <iostream>
 
 using namespace sf;
 using namespace std;
@@ -13,13 +14,14 @@ Ship::Ship(IntRect ir) : Sprite()
 	_sprite = ir;
 	setTexture(spritesheet);
 	setTextureRect(_sprite);
+	_exploded = false;
 }
 
 void Ship::Update(const float &dt) { }
 
 Ship::~Ship() = default;
 
-void Ship::Explode()
+void Ship::Explode(const float& dt)
 {
 	setTextureRect(IntRect(128, 32, 32, 32));
 	_exploded = true;
@@ -57,12 +59,19 @@ void Invader::Update(const float& dt)
 				s->move(0, 24);
 			}
 		}
+	}	
+
+	if (is_exploded() && _fadetime > 0)
+	{
+		_fadetime--;
+		setColor(Color(255, 255, 255, _fadetime));
 	}
 
-	if(firetime <= 0 && rand() % 100 == 0)
+	if(firetime <= 0 && rand() % 100 == 0 && !is_exploded())
 	{
 		Bullet::Fire(getPosition(), true);
 		firetime = 4.0f + (rand() % 60);
+		cout << "Enemy Fired" << endl;
 	}
 }
 
@@ -97,10 +106,11 @@ void Player::Update(const float& dt)
 				s->move(speed * dt, 0);
 			}
 
-			if (firetime <= 0 && Keyboard::isKeyPressed(Keyboard::Space))
+			if (firetime <= 0 && Keyboard::isKeyPressed(Keyboard::Space) && !is_exploded())
 			{
 				Bullet::Fire(getPosition(), false);
 				firetime = 0.7f;
+				cout << "Fired" << endl;
 			}
 
 			if (s->getPosition().x < 0)
@@ -110,6 +120,12 @@ void Player::Update(const float& dt)
 			else if (s->getPosition().x > gameWidth - 32)
 			{
 				s->setPosition(gameWidth - 32, s->getPosition().y);
+			}
+
+			if (is_exploded() && _fadetime > 0)
+			{
+				_fadetime--;
+				setColor(Color(255, 255, 255, _fadetime));
 			}
 		}
 	}

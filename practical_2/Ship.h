@@ -10,6 +10,7 @@ protected:
 	//Default constructo is hidden
 	Ship();
 	bool _exploded;
+	float _fadetime = 255;
 public:
 	bool type;
 	//Constructor that takes a sprite
@@ -19,7 +20,7 @@ public:
 	//Update, virtual so can be overridden
 	virtual void Update(const float& dt);
 	bool is_exploded() const { return _exploded; };
-	virtual void Explode();
+	virtual void Explode(const float& dt);
 };
 
 class Invader : public Ship

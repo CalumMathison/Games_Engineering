@@ -34,6 +34,8 @@ void Load()
 		}
 	}
 
+	//Bullet::Load();
+
 	auto player = new Player(true);
 	ships.push_back(player);
 }
@@ -80,13 +82,13 @@ void Render(RenderWindow& window)
 	}
 
 	Bullet::Render(window);
-
+	
 	//window.draw(player);
 }
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(gameWidth, gameHeight), "PONG");
+	sf::RenderWindow window(sf::VideoMode(gameWidth, gameHeight), "Invader");
 	Load();
 	while(window.isOpen())
 	{
