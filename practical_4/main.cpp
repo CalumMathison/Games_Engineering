@@ -1,13 +1,28 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
+#include "Entity.h"
+#include "Player.h"
+#include "Ghost.h"
+#include "SystemRenderer.h"
+#include "Pacman.h"
 
 using namespace sf;
 using namespace std;
 
+uint16_t _gameHeight = 600, _gameWidth = 800;
+EntityManager em;
+
 void Load()
 {
+	Renderer::Initialise(Renderer::GetWindow());
 
+	gameScene.reset(new GameScene());
+	menuScene.reset(new MenuScene());
+	gameScene->Load();
+	menuScene->Load();
+
+	activeScene = menuScene;
 }
 
 void Update(RenderWindow& window)
@@ -33,16 +48,19 @@ void Update(RenderWindow& window)
 		window.close();
 	}
 
+	activeScene->Update(dt);
 }
 
 void Render(RenderWindow& window)
 {
 	//Draw Everything
+	activeScene->Render();
+	Renderer::Render();
 }
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 800), "Maze Game");
+	sf::RenderWindow window(sf::VideoMode(_gameWidth, _gameHeight), "Maze Game");
 	Load();
 	while (window.isOpen())
 	{
