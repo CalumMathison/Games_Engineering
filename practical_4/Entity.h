@@ -6,13 +6,6 @@
 using namespace std;
 using namespace sf;
 
-struct EntityManager
-{
-	vector<shared_ptr<Entity>> list;
-	void Update(double dt);
-	void Render();
-};
-
 class Entity
 {
 protected: 
@@ -29,4 +22,11 @@ public:
 	const Vector2f GetPosition();
 	void SetPosition(const Vector2f& pos);
 	void Move(const Vector2f& pos);
+};
+
+struct EntityManager
+{
+	vector<shared_ptr<Entity>> list;
+	void Update(double dt);
+	void Render();
 };

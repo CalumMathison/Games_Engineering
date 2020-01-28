@@ -4,16 +4,16 @@
 using namespace std;
 using namespace sf;
 
-extern shared_ptr<Scene> gameScene;
-extern shared_ptr<Scene> menuScene;
-extern shared_ptr<Scene> activeScene;
+extern std::shared_ptr<Scene> gameScene;
+extern std::shared_ptr<Scene> menuScene;
+extern std::shared_ptr<Scene> activeScene;
 
 class MenuScene : public Scene
 {
 private:
 	Text text;
 public:
-	MenuScene();
+	MenuScene() { }
 	void Update(double dt) override;
 	void Render() override;
 	void Load() override;

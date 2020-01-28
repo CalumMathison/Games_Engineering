@@ -15,7 +15,6 @@ EntityManager em;
 
 void Load()
 {
-	Renderer::Initialise(Renderer::GetWindow());
 
 	gameScene.reset(new GameScene());
 	menuScene.reset(new MenuScene());
@@ -61,6 +60,7 @@ void Render(RenderWindow& window)
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(_gameWidth, _gameHeight), "Maze Game");
+	Renderer::Initialise(window);
 	Load();
 	while (window.isOpen())
 	{
