@@ -4,12 +4,21 @@
 #include "SystemRenderer.h"
 #include "Player.h"
 #include "Ghost.h"
+#include "ecm.h"
+#include "cmp_sprite.h"
+#include "cmp_player_movement.h"
+#include "cmp_enemy_ai.h"
+
+#define GHOSTS_COUNT 4;
 
 std::shared_ptr<Scene> gameScene;;
 std::shared_ptr<Scene> menuScene;
 std::shared_ptr<Scene> activeScene;
 
-void Scene::Load() { }
+void Scene::Load() 
+{
+
+}
 
 void Scene::Update(double dt) { _ents.Update(dt); }
 
@@ -41,16 +50,33 @@ void MenuScene::Render()
 
 void GameScene::Load()
 {
-	shared_ptr<Player> p(new Player);
-	_ents.list.push_back(p);
-	shared_ptr<Ghost> pinky(new Ghost(Color::Magenta));
-	_ents.list.push_back(pinky);
-	shared_ptr<Ghost> inky(new Ghost(Color::Cyan));
-	_ents.list.push_back(inky);
-	shared_ptr<Ghost> blinky(new Ghost(Color::Red));
-	_ents.list.push_back(blinky);
-	shared_ptr<Ghost> clyde(new Ghost(Color::Color(255, 127, 80, 1)));
-	_ents.list.push_back(clyde);
+	{
+		auto pl = make_shared<Entity>();
+		auto s = pl->AddComponent<ShapeComponent>();
+		s->SetShape<CircleShape>(12.0f);
+		s->GetShape().setFillColor(Color::Yellow);
+		s->GetShape().setOrigin(Vector2f(12.0f, 12.0f));
+		auto c = pl->AddComponent<PlayerMovementComponent>();
+
+		_ents.list.push_back(pl);
+	}
+
+	const Color ghost_cols[]{ {208, 62, 25},		//Red
+							{219, 133, 28},		//Orange
+							{70, 191, 238},		//Cyan
+							{234, 130, 229} };	//Pink
+
+	for (int i = 0; i < 4; ++i)
+	{
+		auto ghost = make_shared<Entity>();
+		auto s = ghost->AddComponent<ShapeComponent>();
+		s->SetShape<CircleShape>(12.0f);
+		s->GetShape().setFillColor(ghost_cols[i % 4]);
+		s->GetShape().setOrigin(Vector2f(12.0f, 12.0f));
+		auto c = ghost->AddComponent<EnemyAiMovement>();
+
+		_ents.list.push_back(ghost);
+	}
 }
 
 void GameScene::Update(double dt)
@@ -64,7 +90,7 @@ void GameScene::Update(double dt)
 
 void GameScene::Render()
 {
-	_ents.Render();
+	Scene::Render();
 }
 
 void GameScene::Respawn()

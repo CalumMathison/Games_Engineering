@@ -21,11 +21,11 @@ protected:
 	bool _forDeletion;	//Should be deleted
 public:
 	Entity();
-	virtual ~Entity();
+	virtual ~Entity() { };
 	virtual void Update(double dt);
 	virtual void Render();
 
-	const Vector2f& GetPosition() const;
+	const Vector2f GetPosition();
 	void SetPosition(const Vector2f& _position);
 	bool Is_For_Deletion() const;
 	float GetRotation() const;
@@ -35,7 +35,44 @@ public:
 	void SetForDelete();
 	bool IsVisible() const;
 	void SetVisible(bool _visible);
-	templat
+	
+	template <typename T>
+	shared_ptr<T> AddComponent()
+	{
+		static_assert(is_base_of<Component, T>::value, "T != Component");
+		shared_ptr<T> sp(make_shared<T>(this));
+		_components.push_back(sp);
+		return sp;
+	}
+
+	template <typename T>
+	const vector<shared_ptr<T>> GetComponent() const
+	{
+		static_assert(is_base_of<Component, T>::value, "T != Component");
+		vector<shared_ptr<T>> ret;
+		for (const auto c : _components)
+		{
+			if (typeid(*c) == typeid(T))
+			{
+				ret.push_back(dynamic_pointer_cast<T>(c));
+			}
+		}
+	}
+
+	template <typename T> 
+	const vector<shared_ptr<T>> GetCompatibleComponent()
+	{
+		static_assert(is_base_of<Component, T>::value, "T != Component");
+		vector<shared_ptr<T>> ret;
+		for (auto c : _components)
+		{
+			auto dd = dynamic_cast<T*>(&(*c));
+			if (dd)
+			{
+				ret.push_back(dynamic_pointer_cast<T>(c));
+			}
+		}
+	}
 };
 
 class Component 
@@ -43,11 +80,18 @@ class Component
 protected:
 	Entity* const _parent;
 	bool _forDeletion;		//Should be removed
-	explicit Component(Entity* const p);
+	explicit Component(Entity* const p) : _parent(p), _forDeletion(false) { };
 public:
 	Component() = delete;
 	bool Is_For_Deletion() const;
 	virtual void Update(double dt) = 0;
 	virtual void Render() = 0;
-	virtual ~Component();
+	virtual ~Component() { };
+};
+
+struct EntityManager
+{
+	vector<shared_ptr<Entity>> list;
+	void Update(double dt);
+	void Render();
 };

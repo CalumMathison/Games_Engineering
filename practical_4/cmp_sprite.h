@@ -18,9 +18,9 @@ public:
 
 	Shape& GetShape() const;
 
-	template <typename T, typename Targs, typename params>
-	void SetShape(Targs, params)
+	template <typename T>
+	void SetShape(float p)
 	{
-		_shape.reset(new T(params));
+		_shape.reset(new T(p));
 	}
 };
